@@ -324,3 +324,7 @@ QString DebugDialog::createKeyTag(const QKeyEvent *event) {
 
 	return QString("<kbd>%1</kbd>").arg(keyName);
 }
+
+DebugDialog::DebugStream DebugDialog::stream(DebugLevel level, QObject* ancestor) {
+	return DebugStream(level, ancestor);
+}
