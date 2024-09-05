@@ -608,6 +608,7 @@ void Simulator::updateLabPowerSupplyScreen(ItemBase * labPowerSupply, double vol
     if(aux.size() < 5) {
         vString.prepend(QString(5-aux.size(),' '));
     }
+    auxC.remove(QChar('.'));
     if(auxC.size() < 5) {
         cString.prepend(QString(5-auxC.size(),' '));
     }
@@ -622,8 +623,8 @@ void Simulator::updateLabPowerSupplyScreen(ItemBase * labPowerSupply, double vol
     QRectF bbMultBoundingBox = m_sch2bbItemHash.value(labPowerSupply)->boundingRect();
     QRectF bbBoundingBox = bbScreen->boundingRect();
 
-    //Set the text to be a 80% percent of the multimeter´s width and 50% in sch view
-    bbScreen->setScale((0.8*bbMultBoundingBox.width())/bbBoundingBox.width());
+    //Set the text to be a 72% percent of the power supply´s width
+    bbScreen->setScale((0.72*bbMultBoundingBox.width())/bbBoundingBox.width());
 
 
     //Update the bounding box after scaling them
@@ -631,10 +632,10 @@ void Simulator::updateLabPowerSupplyScreen(ItemBase * labPowerSupply, double vol
 
 
     //Center the text
-    bbScreen->setPos(QPointF((bbMultBoundingBox.width()-bbBoundingBox.width())/2
-                             ,0.07*bbMultBoundingBox.height()));
+    bbScreen->setPos(QPointF((bbMultBoundingBox.width()-bbBoundingBox.width()*1.13)/2
+                             ,0.075*bbMultBoundingBox.height()));
 
-    bbScreen->setDefaultTextColor(QColor(48, 48, 48));
+    bbScreen->setDefaultTextColor(QColor(200, 48, 48));
     bbScreen->setZValue(std::numeric_limits<double>::max());
 
     m_sch2bbItemHash.value(labPowerSupply)->addSimulationGraphicsItem(bbScreen);
@@ -1337,7 +1338,16 @@ void Simulator::updateBattery(unsigned long timeStep, ItemBase * part) {
 
     if (part->moduleID().contains("LabDCPowerSupply")) {
         maxCurrent = getMaxPropValue(part, "max current");
-        updateLabPowerSupplyScreen(part, voltage, current);
+        ConnectorItem * leg0 = nullptr, * leg1 = nullptr;
+        QList<ConnectorItem *> legs = part->cachedConnectorItems();
+        leg0 = legs.at(0);
+        leg1 = legs.at(1);
+
+        if(!leg0 || !leg1 )
+            return;
+
+        voltage = calculateVoltage(timeStep, leg0, leg1);
+        updateLabPowerSupplyScreen(part, voltage, -current);
     }
 }
 
