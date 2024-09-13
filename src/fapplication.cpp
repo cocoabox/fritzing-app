@@ -363,6 +363,8 @@ FApplication::FApplication( int & argc, char ** argv) : QApplication(argc, argv)
 }
 
 int FApplication::init() {
+	std::setlocale(LC_NUMERIC, "C");
+	QLocale::setDefault(QLocale::C);
 
 	//foreach (QString argument, m_arguments) {
 	//DebugDialog::debug(QString("argument %1").arg(argument));
