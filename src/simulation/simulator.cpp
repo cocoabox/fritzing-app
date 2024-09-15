@@ -930,6 +930,9 @@ double Simulator::getPower(unsigned long timeStep, ItemBase* part, QString subpa
 double Simulator::getCurrent(unsigned long timeStep, ItemBase* part, QString subpartName) {
 	QString instanceStr = part->instanceTitle().toLower();
 	instanceStr.append(subpartName.toLower());
+	if (instanceStr == "am1") {
+		instanceStr = "vam1";
+	}
 
 	QChar deviceType = getDeviceType(part);
 	//DebugDialog::stream() << "deviceType: " << deviceType.toLatin1();
