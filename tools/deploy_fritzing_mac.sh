@@ -1,10 +1,15 @@
 #!/bin/bash -e
-QTBIN=/usr/local/opt/qt5/bin
+QTBIN=/usr/local/opt/qt6/bin
 
 # Go to this scripts directory and then one up
 toolsdir=$(dirname "${BASH_SOURCE[0]}")
 cd "$toolsdir"/..
 workingdir=$(pwd)
+
+if [[ ! -f phoenix.pro ]]; then
+    echo run this script in the GIT ROOT directory >&2
+    exit 1
+fi
 
 echo ">> working directory"
 echo "$workingdir"
@@ -37,8 +42,14 @@ cd "$supportdir"
 rm -f ./translations/*.ts  			# remove translation xml files, since we only need the binaries in the release
 find ./translations -name "*.qm" -size -128c -delete   # delete empty translation binaries
 
-echo ">> clone parts repository"
-git clone --branch master --single-branch https://github.com/fritzing/fritzing-parts.git
+if [[ -d ../fritzing-parts ]]; then
+    echo ">> symlink parts repository"
+    [[ -L "./fritzing-parts" ]] && rm ./fritzing-parts 
+    ln -s ../fritzing-parts ./fritzing-parts
+else
+    echo ">> clone parts repository"
+    git clone --branch master --single-branch https://github.com/fritzing/fritzing-parts.git
+fi
 echo ">> build parts database"
 ./Fritzing -db "fritzing-parts/parts.db"  # -pp "fritzing-parts" -f "."
 

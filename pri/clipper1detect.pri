@@ -23,5 +23,8 @@ win32 {
 message("including $$absolute_path($${CLIPPER1}/include)")
 INCLUDEPATH += $$absolute_path($${CLIPPER1}/include/polyclipping)
 
-LIBS += -L$$absolute_path($${CLIPPER1}/lib) -lpolyclipping
-QMAKE_RPATHDIR += $$absolute_path($${CLIPPER1}/lib)
+LIBS += $$absolute_path($${CLIPPER1}/lib/libpolyclipping.a)
+
+!macx {
+    QMAKE_RPATHDIR += $$absolute_path($${CLIPPER1}/lib)
+}

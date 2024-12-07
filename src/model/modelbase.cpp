@@ -868,7 +868,7 @@ ModelPart * ModelBase::createOldSchematicPartAux(ModelPart * modelPart, const QS
 		DebugDialog::debug(QString("Unable to open :%1").arg(path));
 	}
 	QDomDocument oldDoc;
-	QDomDocument::ParseResult parseResult = oldDoc.setContent(&newFzp);
+	QDomDocument::ParseResult parseResult = oldDoc.setContent(&newFzp   );
 	if (!parseResult.operator bool()) {
 		QString logMessage = QString("Parse Error: %1 at line %2, column %3 in %4")
 								 .arg(parseResult.errorMessage)
